@@ -1,6 +1,9 @@
 import os
 import logging
+import g4f
+import json
 from termcolor import colored
+from utils import send_prompt_to_gpt
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
