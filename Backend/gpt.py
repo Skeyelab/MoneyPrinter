@@ -88,10 +88,7 @@ def get_search_terms(video_subject: str, amount: int, script: str) -> List[str]:
     """
 
     # Generate search terms
-    response = g4f.ChatCompletion.create(
-        model=g4f.models.gpt_35_turbo_16k_0613,
-        messages=[{"role": "user", "content": prompt}],
-    )
+    response = call_gpt_model(prompt, 'g4f.models.gpt_35_turbo_16k_0613')
 
     # Load response into JSON-Array
     try:
