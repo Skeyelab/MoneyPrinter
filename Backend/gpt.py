@@ -1,6 +1,7 @@
 import re
 import json
 import g4f
+from utils import call_gpt_model, clean_response
 from typing import Tuple, List  
 from termcolor import colored
 
@@ -36,25 +37,14 @@ def generate_script(video_subject: str) -> str:
     """
 
     # Generate script
-    response = g4f.ChatCompletion.create(
-        model=g4f.models.gpt_35_turbo_16k_0613,
-        messages=[{"role": "user", "content": prompt}],
-    )
+    response = call_gpt_model(prompt, 'g4f.models.gpt_35_turbo_16k_0613')
 
     print(colored(response, "cyan"))
 
     # Return the generated script
     if response:
-        # Clean the script
-        # Remove asterisks, hashes
-        response = response.replace("*", "")
-        response = response.replace("#", "")
-
-        # Remove markdown syntax
-        response = re.sub(r'\[.*\]', '', response)
-        response = re.sub(r'\(.*\)', '', response)
-
-        return f"{response} "
+        cleaned_response = clean_response(response)
+        return cleaned_response
     print(colored("[-] GPT returned an empty response.", "red"))
     return None
 
