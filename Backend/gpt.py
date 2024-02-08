@@ -99,25 +99,24 @@ def get_search_terms(video_subject: str, amount: int, script: str) -> List[str]:
     """
 
     # Generate search terms
-    response = g4f.ChatCompletion.create(
-        model=g4f.models.gpt_35_turbo_16k_0613,
-        messages=[{"role": "user", "content": prompt}],
+    response = send_prompt_to_gpt(
+        model='gpt_35_turbo_16k_0613',
+        prompt=prompt
     )
 
-    # Load response into JSON-Array
+    # Try to parse the response as JSON
     try:
         search_terms = json.loads(response)
-    except Exception:
-        print(colored("[*] GPT returned an unformatted response. Attempting to clean...", "yellow"))
-
-        # Use Regex to extract the array from the markdown
-        search_terms = re.findall(r'\[.*\]', str(response))
-
-        if not search_terms:
-            print(colored("[-] Could not parse response.", "red"))
-
-        # Load the array into a JSON-Array
-        search_terms = json.loads(search_terms)
+    except json.JSONDecodeError as e:
+        print(colored(f"[*] GPT returned an unformatted response: {str(e)}", "yellow"))
+        # Attempt to extract and process JSON array from response as fallback
+        found_array = re.findall(r'\[.*\]', str(response))
+        if found_array:
+            try:
+                search_terms = json.loads(found_array[0])
+            except json.JSONDecodeError:
+                print(colored("[-] Failed to parse the extracted JSON array.", "red"))
+                search_terms = None
 
     # Let user know
     print(colored(f"\nGenerated {amount} search terms: {', '.join(search_terms)}", "cyan"))
