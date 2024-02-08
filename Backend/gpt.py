@@ -1,6 +1,7 @@
 import re
 import json
 import g4f
+from utils import send_prompt_to_gpt
 from typing import Tuple, List  
 from termcolor import colored
 
@@ -36,12 +37,12 @@ def generate_script(video_subject: str) -> str:
     """
 
     # Generate script
-    response = g4f.ChatCompletion.create(
-        model=g4f.models.gpt_35_turbo_16k_0613,
-        messages=[{"role": "user", "content": prompt}],
+    response = send_prompt_to_gpt(
+        model='gpt_35_turbo_16k_0613',
+        prompt=prompt
     )
 
-    print(colored(response, "cyan"))
+    
 
     # Return the generated script
     if response:
@@ -55,7 +56,7 @@ def generate_script(video_subject: str) -> str:
         response = re.sub(r'\(.*\)', '', response)
 
         return f"{response} "
-    print(colored("[-] GPT returned an empty response.", "red"))
+    
     return None
 
 
