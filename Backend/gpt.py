@@ -129,10 +129,8 @@ def generate_metadata(video_subject: str, script: str) -> Tuple[str, str, List[s
     """  
   
     # Generate title  
-    title_response = g4f.ChatCompletion.create(  
-        model=g4f.models.gpt_35_turbo_16k_0613,  
-        messages=[{"role": "user", "content": title_prompt}],  
-    )  
+    title_response = call_gpt_model(title_prompt, 'g4f.models.gpt_35_turbo_16k_0613')
+    title = clean_response(title_response)  
   
     # Extract title from response  
     title = title_response.strip()  # Assuming title_response is a string  
@@ -145,10 +143,8 @@ def generate_metadata(video_subject: str, script: str) -> Tuple[str, str, List[s
     """  
   
     # Generate description  
-    description_response = g4f.ChatCompletion.create(  
-        model=g4f.models.gpt_35_turbo_16k_0613,  
-        messages=[{"role": "user", "content": description_prompt}],  
-    )  
+    description_response = call_gpt_model(description_prompt, 'g4f.models.gpt_35_turbo_16k_0613')
+    description = clean_response(description_response)  
   
     # Extract description from response  
     description = description_response.strip()  # Assuming description_response is a string  
